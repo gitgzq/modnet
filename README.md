@@ -1,5 +1,28 @@
 # Readme
 This work is published as paper in DCC 2022.
+
+## Environment
+First run 
+```
+pip install -r requirements.txt
+```
+for the installazation of python packages.
+
+# Python Interface installation (you may encounter some bugs if use python2)
+
+You need these files in the Util/ folder：*AE.cpp*, *My_Range_Coder.h*, *My_Range_Encoder.cpp*, *My_Range_Decoder.cpp*.
+
+**Step. 1**：  
+
+Change the Python.h direction in the AE.cpp file for the direction of Python.h in your system. (e.g. /usr/include/python3.6m/Python.h）
+
+**Step. 2**：
+
+```
+python setup.py build
+python setup.py install
+```
+
 ## Dataset        
 
 Training dataset includes 600K cropped 256*256 images generated from LIU4K dataset. 
