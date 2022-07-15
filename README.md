@@ -10,7 +10,7 @@ for the installazation of python packages.
 
 ### Python Interface installation (you may encounter some bugs if use python2)
 
-You need these files in the Util/ folder：*AE.cpp*, *My_Range_Coder.h*, *My_Range_Encoder.cpp*, *My_Range_Decoder.cpp*.
+You need these files in the 'Util' folder：*AE.cpp*, *My_Range_Coder.h*, *My_Range_Encoder.cpp*, *My_Range_Decoder.cpp*.
 
 **Step. 1**：  
 
@@ -31,22 +31,30 @@ Reference: J. Liu, D. Liu, W. Yang, S. Xia, X. Zhang and Y. Dai, "A Comprehensiv
 
 ## Training procedure
 
-The training of modnet adopts the weights of the highest rate fixed-rate model as initialization. Download the baseline_model.zip and unzip it into the baseline_model/ folder and follow the instructions below to train modnet.
+The training of modnet adopts the weights of the highest rate fixed-rate model as initialization. Download the baseline_model.zip and unzip it into the 'baseline_model' folder and follow the instructions below to train modnet.
 
-download address : https://drive.google.com/file/d/1qoOxiiRT_vQQfgN4v7epYaTH4CbXTfVu/view?usp=sharing
+download url : https://drive.google.com/file/d/1qoOxiiRT_vQQfgN4v7epYaTH4CbXTfVu/view?usp=sharing
 
 ### For mse model
 
-In the /RDM4NIC/ directory run command 'python train.py --data *' 
+In the /RDM4NIC/ directory run
+```
+python train.py --data * 
+```
+In * ,you can config as you need.  (same below)
 
 ### For msssim model
 
-In the /RDM4NIC/ directory run command 'python train_msssim.py --data *'
-
+In the /RDM4NIC/ directory run
+```
+python train_msssim.py --data *
+```
 ## Testing procedure
 
-In the /RDM_in_NIC/ directory run command 'python test.py --lmd * --input *' . In * ,you can config as you need. Note that you should put the trained model into folder 'proposed_model'
-
+Put the trained model into folder 'proposed_model' and run
+```
+python test.py --lmd * --input *' . 
+```
 
 
 
