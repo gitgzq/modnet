@@ -1,5 +1,8 @@
 # Readme
-This work is published as paper in DCC 2022.
+This work is published as paper in DCC 2022. 
+Title: Rate Distortion Characteristic Modeling for Neural Image Compression
+Cite as: Jia C, Ge Z, Wang S, et al. Rate distortion characteristic modeling for neural image compression[C]//2022 Data Compression Conference (DCC). IEEE, 2022: 202-211.
+
 
 ## Environment
 First run 
