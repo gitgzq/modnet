@@ -30,39 +30,38 @@ def adjust_learning_rate(optimizer, epoch, init_lr):
 
 
 def train(args):
-
-    train_data = ImageFolder(root='/data/ljp105/NIC_Dataset/train/', transform=transforms.Compose(
-        [transforms.ToTensor()]))
+    train_data = ImageFolder(root=args.data, transform=transforms.Compose(
+        [transforms.RandomCrop(256), transforms.ToTensor()]))
     train_loader = DataLoader(train_data, batch_size=args.b_size,
                               shuffle=True, num_workers=8)
 
     image_comp = model.Image_coding(3, args.M, args.N2, args.M, args.M // 2).cuda()
     context = Weighted_Gaussian(args.M).cuda()
-    whole = model.NIC_Modnet(3, args.M, args.N2, args.M, args.M // 2).cuda()
+    net = model.NIC_Modnet(3, args.M, args.N2, args.M, args.M // 2).cuda()
 
-    model_existed = os.path.exists(os.path.join(args.model, 'fr_base.pkl')) and \
-                    os.path.exists(os.path.join(args.model, 'fr_basep.pkl'))
+
+    model_existed = os.path.exists(os.path.join(args.model, 'fr_mse.pkl')) and \
+                    os.path.exists(os.path.join(args.model, 'fr_msep.pkl'))
 
     if model_existed:
-        image_comp.load_state_dict(torch.load(os.path.join(args.model, 'fr_base.pkl')))
-        context.load_state_dict(torch.load(os.path.join(args.model, 'fr_basep.pkl')))
-        print('resumed the previous model')
+        image_comp.load_state_dict(torch.load(os.path.join(args.model, 'fr_mse.pkl')))
+        context.load_state_dict(torch.load(os.path.join(args.model, 'fr_msep.pkl')))
+        net.encoder = image_comp.encoder.cuda()
+        net.decoder = image_comp.decoder.cuda()
+        net.hyper_dec = image_comp.hyper_dec.cuda()
+        net.factorized_entropy_func = image_comp.factorized_entropy_func.cuda()
+        net.p = image_comp.p.cuda()
+        net.context = context.cuda()
+        print('resumed from the fixed-rate model')
 
     else:
-        print("main model not found")
+        print("fixed-rate model not found")
 
-    whole.encoder = image_comp.encoder.cuda()
-    whole.decoder = image_comp.decoder.cuda()
-    whole.hyper_dec = image_comp.hyper_dec.cuda()
-    whole.factorized_entropy_func = image_comp.factorized_entropy_func.cuda()
-    whole.p = image_comp.p.cuda()
-    whole.context = context.cuda()
+    if args.gpu > 1:
+        gpu_id = [id for id in range(args.gpu)]
+        net = nn.DataParallel(net, device_ids=gpu_id)
 
-
-    gpu_id = [id for id in range(args.gpu)]
-    whole = nn.DataParallel(whole, device_ids=gpu_id)
-
-    opt = torch.optim.Adam(whole.parameters(), lr=args.lr)
+    opt = torch.optim.Adam(net.parameters(), lr=args.lr)
 
     msssim_func = torch_msssim.MS_SSIM(max_val=1.).cuda()
     mse_func = nn.MSELoss()
@@ -82,7 +81,7 @@ def train(args):
             batch_x = Variable(batch_x).cuda()
             b = batch_x.size()[0]
 
-            lmd_info,fake,xp2,xp3=whole(batch_x)
+            lmd_info,fake,xp2,xp3=net(batch_x)
 
             msssim = msssim_func(fake, batch_x)
 
@@ -108,7 +107,7 @@ def train(args):
 
             l_rec.backward()
 
-            torch.nn.utils.clip_grad_norm_(whole.parameters(), 5)
+            torch.nn.utils.clip_grad_norm_(net.parameters(), 5)
 
             opt.step()
 
@@ -132,7 +131,7 @@ def train(args):
                 fd.close()
 
             if (step + 1) % 2000 == 0:
-                torch.save(whole.module.state_dict(),
+                torch.save(net.module.state_dict(),
                            os.path.join(args.out_dir, 'Modnetmsssim.pkl'))
 
 
@@ -142,9 +141,10 @@ if __name__ == '__main__':
     parser.add_argument("--M", type=int, default=256, help="the value of M")
     parser.add_argument("--b_size", type=int, default=12)
     parser.add_argument("--N2", type=int, default=192, help="the value of N2")
-    parser.add_argument("--lr", type=float, default=2e-5, help="initial learning rate.")
-    parser.add_argument('--out_dir', type=str, default='/output/')
-    parser.add_argument('--model', type=str, default='/baseline_model/')
+    parser.add_argument("--lr", type=float, default=5e-5, help="initial learning rate.")
+    parser.add_argument('--out_dir', type=str, default='proposed_model/')
+    parser.add_argument('--model', type=str, default='baseline_model/')
+    parser.add_argument('--data', type=str, required=True)
     parser.add_argument("--gpu", type=int, default=2)
 
     args = parser.parse_args()

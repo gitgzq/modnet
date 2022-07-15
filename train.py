@@ -31,7 +31,7 @@ def train(args):
     train_data = ImageFolder(root=args.data, transform=transforms.Compose(
         [transforms.RandomCrop(256),transforms.ToTensor()]))
     train_loader = DataLoader(train_data, batch_size=args.b_size,
-                              shuffle=True, num_workers=0)
+                              shuffle=True, num_workers=8)
 
     image_comp = model.Image_coding(3, args.M, args.N2, args.M, args.M // 2).cuda()
     context = Weighted_Gaussian(args.M).cuda()
@@ -52,7 +52,7 @@ def train(args):
         print('resumed from the fixed-rate model')
 
     else:
-        print("main model not found")
+        print("fixed-rate model not found")
 
     if args.gpu>1:
         gpu_id = [id for id in range(args.gpu)]
