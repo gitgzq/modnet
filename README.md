@@ -9,6 +9,9 @@ Reference: J. Liu, D. Liu, W. Yang, S. Xia, X. Zhang and Y. Dai, "A Comprehensiv
 ## Training procedure
 
 The training of modnet adopts the weights of the highest rate fixed-rate model as initialization. Download the baseline_model.zip and unzip it into the baseline_model/ folder and follow the instructions below to train modnet.
+
+download address : https://drive.google.com/file/d/1qoOxiiRT_vQQfgN4v7epYaTH4CbXTfVu/view?usp=sharing
+
 ### For mse model
 
 In the /RDM4NIC/ directory run command 'python train.py --data *' 
