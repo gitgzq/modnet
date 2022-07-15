@@ -8,7 +8,7 @@ pip install -r requirements.txt
 ```
 for the installazation of python packages.
 
-# Python Interface installation (you may encounter some bugs if use python2)
+### Python Interface installation (you may encounter some bugs if use python2)
 
 You need these files in the Util/ folder：*AE.cpp*, *My_Range_Coder.h*, *My_Range_Encoder.cpp*, *My_Range_Decoder.cpp*.
 
