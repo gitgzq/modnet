@@ -165,9 +165,9 @@ def test(args):
             Cdf_lower = list(map(lambda x, y: int(y[x - Min_Main]), Datas, cdf_main))
             Cdf_upper = list(map(lambda x, y: int(
                 y[x - Min_Main]), Datas, cdf_main[:, 1:]))
-            AE.encode_cdf(Cdf_lower, Cdf_upper, "/output/main.bin")
-            FileSizeMain = os.path.getsize("/output/main.bin")
-            print("/output/main.bin: %d bytes" % (FileSizeMain))
+            AE.encode_cdf(Cdf_lower, Cdf_upper, "output/main.bin")
+            FileSizeMain = os.path.getsize("output/main.bin")
+            print("output/main.bin: %d bytes" % (FileSizeMain))
 
 
             Min_V_HYPER = torch.min(y_hyper_q).cpu().numpy().astype(np.int).tolist()
@@ -195,19 +195,19 @@ def test(args):
                     y[x - Min_V_HYPER]), Datas_hyper[i], cdf_hyper[:, i, :])))
                 Cdf_1.extend(list(map(lambda x, y: int(
                     y[x - Min_V_HYPER]), Datas_hyper[i], cdf_hyper[:, i, 1:])))
-            AE.encode_cdf(Cdf_0, Cdf_1, "/output/hyper.bin")
-            FileSizeHyper = os.path.getsize("/output/hyper.bin")
-            print("/output/hyper.bin: %d bytes" % (FileSizeHyper))
+            AE.encode_cdf(Cdf_0, Cdf_1, "output/hyper.bin")
+            FileSizeHyper = os.path.getsize("output/hyper.bin")
+            print("output/hyper.bin: %d bytes" % (FileSizeHyper))
 
             Head_block = struct.pack('2H4h2I', block_H, block_W, Min_Main, Max_Main, Min_V_HYPER, Max_V_HYPER,
                                      FileSizeMain, FileSizeHyper)
             file_object.write(Head_block)
 
-            with open("/output/main.bin", 'rb') as f:
+            with open("output/main.bin", 'rb') as f:
                 bits = f.read()
                 file_object.write(bits)
             f.close()
-            with open("/output/hyper.bin", 'rb') as f:
+            with open("output/hyper.bin", 'rb') as f:
                 bits = f.read()
                 file_object.write(bits)
             f.close()
@@ -242,7 +242,7 @@ if __name__ == '__main__':
     parser.add_argument("--b_size", type=int, default=1)
     parser.add_argument("--N2", type=int, default=192, help="the value of N2")
     parser.add_argument("--lmd", type=float, required=True , help="Lambda for rate-distortion tradeoff.")
-    parser.add_argument('--out_dir', type=str, default='/output/')
+    parser.add_argument('--out_dir', type=str, default='output/')
 
     parser.add_argument("-i", "--input", type=str, help="Input Image")
     parser.add_argument('--model', type=str, default='/proposed_model/modnet.pkl')
