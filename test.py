@@ -90,8 +90,8 @@ def test(args):
 
                 y_main, y_hyper = net.encoder(im)
 
-                y_main_q = net.SQL1(y_main,args.lmd)
-                y_main_q = net.SQL2(y_main_q,args.lmd)
+                y_main_q = net.Modnet1(y_main,args.lmd)
+                y_main_q = net.Modnet2(y_main_q,args.lmd)
 
                 y_main_q = torch.round(y_main_q)
                 y_main_q = torch.Tensor(y_main_q.cpu().numpy().astype(np.int)).cuda()
